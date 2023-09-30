@@ -1,6 +1,6 @@
 import React from "react";
 
-function PopupWithImage({card, onClose}) {
+function ImagePopup({card, onClose}) {
 
   React.useEffect(() => {
     const popupElement = document.querySelector('.popup_type_image')
@@ -27,4 +27,4 @@ function PopupWithImage({card, onClose}) {
   )
 }
 
-export default PopupWithImage
+export default ImagePopup

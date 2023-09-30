@@ -2,7 +2,7 @@ import Header from "./Header";
 import Main from './Main';
 import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";
-import PopupWithImage from "./PopupWithImage";
+import ImagePopup from "./ImagePopup";
 import { useState } from "react";
 
 function App() {
@@ -42,7 +42,7 @@ function App() {
       <PopupWithForm title="Новое место" name="new-card" isOpen={isAddPlacePopupOpen} onClose={closeAllPopups}/>
       <PopupWithForm title="Редактировать профиль" name="profile" isOpen={isEditProfilePopupOpen} onClose={closeAllPopups}/>
       <PopupWithForm title="Вы уверены?" name="confirm" isOpen={isConfirmPopupOpen} onClose={closeAllPopups}/>
-      <PopupWithImage card={selectedCard} onClose={closeAllPopups}/>
+      <ImagePopup card={selectedCard} onClose={closeAllPopups}/>
       <Footer />
     </>
   );

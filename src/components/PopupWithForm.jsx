@@ -1,29 +1,23 @@
 import React from "react";
 
-function PopupWithForm(props) {
+function PopupWithForm({name, title, isOpen, onClose}) {
 
   React.useEffect(() => {
-    const popupElement = document.querySelector(`.popup_type_${props.name}`)
+    const popupElement = document.querySelector(`.popup_type_${name}`)
     const handleCloseOnMouseDown = (evt) => {
-      if (evt.target.classList.contains('popup_opened')) props.onClose()
+      if (evt.target.classList.contains('popup_opened')) onClose()
     }
-    const handleCloseOnEsc = (evt) => {
-      if (evt.key === 'Escape') props.onClose()
-    }
-    popupElement.addEventListener('mousedown', handleCloseOnMouseDown)
-    window.addEventListener('keyup', handleCloseOnEsc)
 
-    return () => {
-      popupElement.removeEventListener('mousedown', handleCloseOnMouseDown)
-      window.removeEventListener('keyup', handleCloseOnEsc)
-    }
+    popupElement.addEventListener('mousedown', handleCloseOnMouseDown)
+
+    return () => popupElement.removeEventListener('mousedown', handleCloseOnMouseDown)
   })
 
   return (
-    <div className={`popup popup_type_${props.name} ${props.isOpen ? 'popup_opened' : ''}`}>
+    <div className={`popup popup_type_${name}${isOpen ? ' popup_opened' : ''}`}>
       <div className="popup__container">
-        <button className="popup__close-button" type="button" onClick={props.onClose}/>
-        <h2 className="popup__title">{props.title}</h2>
+        <button className="popup__close-button" type="button" onClick={onClose}/>
+        <h2 className="popup__title">{title}</h2>
       </div>
     </div>
   )

@@ -18,11 +18,11 @@
 
 **Описание**
 
-Это третий проект в рамках обучения на курсе **«Front-End разработчик»** в [Яндекс.Практикуме](https://practicum.yandex.ru/). Файловая структура организована по БЭМ (Nested).
+Это реализация на React третьего проекта в рамках обучения на курсе **«Front-End разработчик»** в [Яндекс.Практикуме](https://practicum.yandex.ru/).
 
 **Заценить проект**
 
-* [Ссылка на GitHub Pages](https://enquence.github.io/mesto/)
+* [Ссылка на GitHub Pages](https://enquence.github.io/mesto/) (пока не React-версия)
 
 **Планы на будущее**
 

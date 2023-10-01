@@ -3,7 +3,7 @@ import defaultAvatar from '../images/noavatar.jpg'
 import { useState, useEffect } from 'react'
 import Card from './Card';
 
-function Main({onEditProfile, onEditAvatar, onAddPlace, onCardClick, onClose}) {
+function Main({onEditProfile, onEditAvatar, onAddPlace, onCardClick, onCardDelete}) {
 
   const [userName, setUserName] = useState('Пользователь')
   const [userDescription, setUserDescription] = useState('Мы потеряли бумажку с вашим описанием')
@@ -51,7 +51,7 @@ function Main({onEditProfile, onEditAvatar, onAddPlace, onCardClick, onClose}) {
       </section>
       <section className="elements">
         {
-          cards.map((card) => <Card key={card.id} card={card} onCardClick={onCardClick} />)
+          cards.map((card) => <Card key={card.id} card={card} onCardClick={onCardClick} onCardDelete={onCardDelete} />)
         }
       </section>
     </main>

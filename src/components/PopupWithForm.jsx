@@ -1,15 +1,14 @@
-function PopupWithForm({name, title, isOpen, onClose, children}) {
-
-  // const handleCloseOnMouseDown = (evt) => {
-  //   if (evt.target.classList.contains('popup_opened')) onClose()
-  // }
+function PopupWithForm({name, title, buttonText, isOpen, onClose, children}) {
 
   return (
-    <div className={`popup${isOpen ? ' popup_opened' : ''}`} onMouseUp={onClose}>
-      <div className="popup__container" onMouseUp={(evt) => evt.stopPropagation()}>
+    <div className={`popup${isOpen ? ' popup_opened' : ''}`} onMouseDown={onClose}>
+      <div className="popup__container" onMouseDown={(evt) => evt.stopPropagation()}>
         <button className="popup__close-button" type="button" onClick={onClose}/>
         <h2 className="popup__title">{title}</h2>
-        {children}
+        <form className={`form form_type_${name}`} name={name}>
+          {children}
+          <button className="form__save-button" type="submit">{ buttonText || 'Сохранить' }</button>
+        </form>
       </div>
     </div>
   )

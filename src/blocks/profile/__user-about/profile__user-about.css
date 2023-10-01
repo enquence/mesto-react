@@ -1,4 +1,4 @@
-.profile__user-occupation {
+.profile__user-about {
   margin: 0;
   padding: 0;
   font-weight: 400;
@@ -10,7 +10,7 @@
 }
 
 @media all and (max-width: 767px) {
-  .profile__user-occupation {
+  .profile__user-about {
     font-size: 14px;
     justify-self: center;
     text-align: center;

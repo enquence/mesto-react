@@ -33,16 +33,6 @@ function Main({onEditProfile, onEditAvatar, onAddPlace, onCardClick, onClose}) {
 
   }, [])
 
-  useEffect(() => {
-
-    const handleClosePopupsOnEsc = (evt) => {
-      if (evt.key === 'Escape') onClose()
-    }
-    window.addEventListener('keyup', handleClosePopupsOnEsc)
-
-    return () => window.removeEventListener('keyup', handleClosePopupsOnEsc)
-  })
-
   return (
     <main className="page__content">
       <section className="profile">
@@ -55,7 +45,7 @@ function Main({onEditProfile, onEditAvatar, onAddPlace, onCardClick, onClose}) {
             <h1 className="profile__user-name">{userName}</h1>
             <button className="profile__edit-button" type="button" onClick={onEditProfile}/>
           </div>
-          <p className="profile__user-occupation">{userDescription}</p>
+          <p className="profile__user-about">{userDescription}</p>
         </div>
         <button className="profile__add-button" type="button" onClick={onAddPlace}/>
       </section>

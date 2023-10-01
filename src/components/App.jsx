@@ -3,7 +3,7 @@ import Main from './Main';
 import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 
 function App() {
 
@@ -26,6 +26,16 @@ function App() {
     setIsEditProfilePopupOpen(false)
     setSelectedCard(null)
   }
+
+  useEffect(() => {
+
+    const handleClosePopupsOnEsc = (evt) => {
+      if (evt.key === 'Escape') closeAllPopups()
+    }
+    window.addEventListener('keyup', handleClosePopupsOnEsc)
+
+    return () => window.removeEventListener('keyup', handleClosePopupsOnEsc)
+  })
 
   return (
     <>

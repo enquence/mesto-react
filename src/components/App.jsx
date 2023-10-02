@@ -3,7 +3,7 @@ import Main from './Main';
 import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {CurrentUserContext} from "../contexts/currentUser";
 import api from "../utils/Api";
 
@@ -17,6 +17,8 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false)
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false)
   const [isConfirmPopupOpen, setIsConfirmPopupOpen] = useState(false)
+  const [newCard, setNewCard] = useState({name: '', link: ''})
+  const confirmAction = useRef()
 
   const handleEditProfileClick = () => {
     setModifiedUser(currentUser)
@@ -26,6 +28,11 @@ function App() {
   const handleEditAvatarClick = () => {
     setModifiedUser(currentUser)
     setIsEditAvatarPopupOpen(true)
+  }
+
+  const handleAddPlace = () => {
+    setIsAddPlacePopupOpen(true)
+    setNewCard({name: '', link: ''})
   }
 
   const closeAllPopups = () => {
@@ -41,7 +48,8 @@ function App() {
       name: card.name,
       link: card.link,
       id: card._id,
-      likes: card.likes
+      likes: card.likes,
+      owner: card.owner
     }
   }
 
@@ -51,11 +59,23 @@ function App() {
       .catch((err) => console.log(err))
   }
 
+  const handleCardDelete = (cardId) => {
+    setIsConfirmPopupOpen(true)
+    confirmAction.current = () => {
+      api.deleteCard(cardId)
+        .then(() => {
+          setCards(cards.filter(card => card.id !== cardId))
+          closeAllPopups()
+        })
+        .catch(err => console.log(err))
+    }
+  }
+
   useEffect(() => {
     api.getUserInfo()
       .then((user) => setCurrentUser(user))
       .then(() => api.getAllCards())
-      .then((data) => setCards(data.reverse().map(card => normalizeCard(card))))
+      .then((data) => setCards(data.map(card => normalizeCard(card))))
       .catch((err) => console.log(err))
       .catch((err) => console.log(err))
   }, [])
@@ -75,10 +95,10 @@ function App() {
         cards={cards}
         onEditProfile={handleEditProfileClick}
         onEditAvatar={handleEditAvatarClick}
-        onAddPlace={() => setIsAddPlacePopupOpen(true)}
+        onAddPlace={handleAddPlace}
         onCardClick={(card) => setSelectedCard(card)}
         onCardLike={handleCardLike}
-        onCardDelete={(cardId) => setIsConfirmPopupOpen(true)}
+        onCardDelete={handleCardDelete}
         onClose={closeAllPopups}
       />
       <PopupWithForm
@@ -106,13 +126,24 @@ function App() {
         name="new-card"
         buttonText='Создать'
         isOpen={isAddPlacePopupOpen}
+        onFormSubmit={() => {
+          api.addCard(newCard)
+            .then((card) => {
+              setCards([normalizeCard(card)].concat(cards))
+              closeAllPopups()
+            })
+        }}
         onClose={closeAllPopups}
       >
         <input className="form__field form__field_type_place-title" id="place-title" name="name" type="text"
-               placeholder="Название" autoComplete="off" minLength="2" maxLength="30" required/>
+               placeholder="Название" autoComplete="off" minLength="2" maxLength="30" required
+               value={newCard.name}
+               onChange={(evt) => setNewCard({...newCard, name: evt.target.value})}/>
         <span className="place-title-error form__field-error"/>
         <input className="form__field form__field_type_place-link" id="place-link" name="link" type="url"
-               placeholder="Ссылка на картинку" autoComplete="off" required/>
+               placeholder="Ссылка на картинку" autoComplete="off" required
+               value={newCard.link}
+               onChange={(evt) => setNewCard({...newCard, link: evt.target.value})}/>
         <span className="place-link-error form__field-error"/>
       </PopupWithForm>
       <PopupWithForm
@@ -145,12 +176,17 @@ function App() {
         name="confirm"
         buttonText='Да'
         isOpen={isConfirmPopupOpen}
+        onFormSubmit={() => {
+          confirmAction.current()
+          closeAllPopups()
+        }}
         onClose={closeAllPopups}
       />
       <ImagePopup card={selectedCard} onClose={closeAllPopups}/>
       <Footer/>
     </CurrentUserContext.Provider>
-  );
+  )
+    ;
 }
 
 export default App;

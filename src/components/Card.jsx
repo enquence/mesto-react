@@ -10,7 +10,7 @@ export default function Card({card, onCardLike, onCardClick, onCardDelete}) {
   return (
     <article className="card">
       <div className="card__image" style={{backgroundImage: `url(${card.link})`}} onClick={() => onCardClick(card)}/>
-      {isOwner && <button className="card__trash-button" type="button" onClick={() => onCardDelete(card)}/>}
+      {isOwner && <button className="card__trash-button" type="button" onClick={() => onCardDelete(card.id)}/>}
       <div className="card__text">
         <h2 className="card__title">{card.name}</h2>
         <div className="card__like-container">

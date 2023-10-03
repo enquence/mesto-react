@@ -43,13 +43,13 @@ function App() {
     setSelectedCard(null)
   }
 
-  const normalizeCard = (card) => {
+  const normalizeCard = ({ name, link, _id, likes, owner }) => {
     return {
-      name: card.name,
-      link: card.link,
-      id: card._id,
-      likes: card.likes,
-      owner: card.owner
+      name: name,
+      link: link,
+      id: _id,
+      likes: likes,
+      owner: owner
     }
   }
 

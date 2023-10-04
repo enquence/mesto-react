@@ -1,4 +1,4 @@
-function PopupWithForm({name, title, buttonText, isOpen, isLoading, onClose, onSubmit, children}) {
+function PopupWithForm({name, title, buttonText, isOpen, isLoading, isValid, onClose, onSubmit, children}) {
 
   return (
     <div className={`popup${isOpen ? ' popup_opened': ''}`} onMouseDown={onClose}>
@@ -7,7 +7,7 @@ function PopupWithForm({name, title, buttonText, isOpen, isLoading, onClose, onS
         <h2 className="popup__title">{title}</h2>
         <form className={`form form_type_${name}`} name={name} onSubmit={onSubmit}>
           {children}
-          <button className="form__save-button" type="submit">
+          <button className={`form__save-button${!isValid ? ' form__save-button_inactive' : ''}`} type="submit">
             { (isOpen && isLoading)
               ? <span className="form__button-spinner"/>
               : buttonText || 'Сохранить'

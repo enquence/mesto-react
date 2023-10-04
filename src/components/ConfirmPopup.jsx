@@ -15,6 +15,7 @@ const ConfirmPopup = ({isOpen, isLoading, onClose, onConfirm}) => {
       buttonText='Да'
       isOpen={isOpen}
       isLoading={isLoading}
+      isValid={true}
       onSubmit={handleConfirm}
       onClose={onClose}
     />

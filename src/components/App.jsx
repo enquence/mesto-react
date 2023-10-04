@@ -47,10 +47,7 @@ function App() {
     confirmAction.current = () => {
       setIsLoading(true)
       api.deleteCard(cardId)
-        .then(() => {
-          setCards(cards.filter(card => card.id !== cardId))
-          closeAllPopups()
-        })
+        .then(() => setCards(cards.filter(card => card.id !== cardId)))
         .catch(err => console.log(err))
         .finally(() => setIsLoading(false))
     }

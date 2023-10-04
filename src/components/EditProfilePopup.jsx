@@ -1,6 +1,7 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
 import PopupWithForm from "./PopupWithForm";
 import {CurrentUserContext} from "../contexts/currentUser";
+import useValidateText from "../hooks/useValidateText";
 
 function EditProfilePopup({isOpen, isLoading, onClose, onUpdateUser}) {
 
@@ -8,37 +9,46 @@ function EditProfilePopup({isOpen, isLoading, onClose, onUpdateUser}) {
   const [name, setName] = useState(currentUser.name)
   const [about, setAbout] = useState(currentUser.about)
 
+  const [isNameValid, nameErrorMessage] = useValidateText(name, 2, 40)
+  const [isAboutValid, aboutErrorMessage] = useValidateText(about, 2, 200)
+
+  const isFormValid = useMemo(() => isAboutValid && isNameValid, [isAboutValid, isNameValid])
+
   useEffect(() => {
     setName(currentUser.name)
     setAbout(currentUser.about)
   }, [currentUser])
 
-
   const handleSubmit = (evt) => {
     evt.preventDefault()
-    onUpdateUser({ name, about })
+    onUpdateUser({name, about})
   }
 
   return (
-      <PopupWithForm
-        title="Редактировать профиль"
-        name="profile"
-        isOpen={isOpen}
-        isLoading={isLoading}
-        onClose={onClose}
-        onSubmit={handleSubmit}
-      >
-        <input className="form__field form__field_type_name" id="user-name" name="name" type="text"
-               placeholder="Ваше имя" autoComplete="off" required minLength="2" maxLength="40"
-               value={name || ''}
-               onChange={(evt) => setName(evt.target.value)}/>
-        <span className="user-name-error form__field-error"/>
-        <input className="form__field form__field_type_occupation" id="user-description" name="about" type="text"
-               placeholder="Что вас определяет?" autoComplete="off" required minLength="2" maxLength="200"
-               value={about || ''}
-               onChange={(evt) => setAbout(evt.target.value)}/>
-        <span className="user-job-error form__field-error"/>
-      </PopupWithForm>
+    <PopupWithForm
+      title="Редактировать профиль"
+      name="profile"
+      isOpen={isOpen}
+      isLoading={isLoading}
+      isValid={isFormValid}
+      onClose={onClose}
+      onSubmit={handleSubmit}
+    >
+      <input className={`form__field${!isNameValid ? ' form__field_type_error' : ''}`}
+             type="text"
+             placeholder="Ваше имя"
+             autoComplete="off"
+             value={name || ''}
+             onChange={(evt) => setName(evt.target.value)}/>
+      <span className={`form__field-error${(!isNameValid && isOpen) ? ' form__field-error_active' : ''}`}>{nameErrorMessage}</span>
+      <input className={`form__field${!isAboutValid ? ' form__field_type_error' : ''}`}
+             type="text"
+             placeholder="Что вас определяет?"
+             autoComplete="off"
+             value={about || ''}
+             onChange={(evt) => setAbout(evt.target.value)}/>
+      <span className={`form__field-error${(!isAboutValid && isOpen) ? ' form__field-error_active' : ''}`}>{aboutErrorMessage}</span>
+    </PopupWithForm>
   );
 }
 

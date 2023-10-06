@@ -1,6 +1,7 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import PopupWithForm from "./PopupWithForm";
 import useValidateText from "../hooks/useValidateText";
+import useValidateUrl from "../hooks/useValidateUrl";
 
 const AddPlacePopup = ({isOpen, isLoading, onClose, onAddCard}) => {
 
@@ -8,7 +9,7 @@ const AddPlacePopup = ({isOpen, isLoading, onClose, onAddCard}) => {
   const [link, setLink] = useState('')
 
   const [isNameValid, nameErrorMessage] = useValidateText(name, 2, 30)
-  const [isLinkValid, linkErrorMessage] = useValidateText(link)
+  const [isLinkValid, linkErrorMessage] = useValidateUrl(link)
 
   const isFormValid = useMemo(() => isLinkValid && isNameValid, [isLinkValid, isNameValid])
 

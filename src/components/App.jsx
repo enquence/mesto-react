@@ -2,7 +2,7 @@ import Header from "./Header";
 import Main from './Main';
 import Footer from "./Footer";
 import ImagePopup from "./ImagePopup";
-import React, {useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {CurrentUserContext} from "../contexts/currentUser";
 import api from "../utils/Api";
 import {normalizeCard} from "../utils/utils";
@@ -24,9 +24,22 @@ function App() {
 
   const confirmAction = useRef()
 
-  const handleEditProfileClick = () => setIsEditProfilePopupOpen(true)
-  const handleEditAvatarClick = () => setIsEditAvatarPopupOpen(true)
-  const handleAddPlaceClick = () => setIsAddPlacePopupOpen(true)
+  const handleClosePopupsOnEsc = (evt) => {
+    if (evt.key === 'Escape') closeAllPopups()
+  }
+
+  const handleEditProfileClick = () => {
+    setIsEditProfilePopupOpen(true)
+    window.addEventListener('keyup', handleClosePopupsOnEsc)
+  }
+  const handleEditAvatarClick = () => {
+    setIsEditAvatarPopupOpen(true)
+    window.addEventListener('keyup', handleClosePopupsOnEsc)
+  }
+  const handleAddPlaceClick = () => {
+    setIsAddPlacePopupOpen(true)
+    window.addEventListener('keyup', handleClosePopupsOnEsc)
+  }
 
   const closeAllPopups = () => {
     setIsAddPlacePopupOpen(false)
@@ -34,6 +47,7 @@ function App() {
     setIsConfirmPopupOpen(false)
     setIsEditProfilePopupOpen(false)
     setSelectedCard(null)
+    window.removeEventListener('keyup', handleClosePopupsOnEsc)
   }
 
   const handleCardLike = (card, isLikedByUser) => {
@@ -44,6 +58,7 @@ function App() {
 
   const handleCardDelete = (cardId) => {
     setIsConfirmPopupOpen(true)
+    window.addEventListener('keyup', handleClosePopupsOnEsc)
     confirmAction.current = () => {
       setIsLoading(true)
       api.deleteCard(cardId)
@@ -62,14 +77,6 @@ function App() {
       .catch((err) => console.log(err))
   }, [])
 
-  useEffect(() => {
-    const handleClosePopupsOnEsc = (evt) => {
-      if (evt.key === 'Escape') closeAllPopups()
-    }
-    window.addEventListener('keyup', handleClosePopupsOnEsc)
-    return () => window.removeEventListener('keyup', handleClosePopupsOnEsc)
-  })
-
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <Header/>
@@ -78,7 +85,10 @@ function App() {
         onEditProfile={handleEditProfileClick}
         onEditAvatar={handleEditAvatarClick}
         onAddPlace={handleAddPlaceClick}
-        onCardClick={(card) => setSelectedCard(card)}
+        onCardClick={(card) => {
+          setSelectedCard(card)
+          window.addEventListener('keyup', handleClosePopupsOnEsc)
+        }}
         onCardLike={handleCardLike}
         onCardDelete={handleCardDelete}
         onClose={closeAllPopups}

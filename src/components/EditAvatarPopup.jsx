@@ -16,6 +16,7 @@ const EditAvatarPopup = ({isOpen, isLoading, onClose, onUpdateAvatar}) => {
   useEffect(() => {
     avatarInput.current.value = ''
     setLink('')
+    if (isOpen) setTimeout( () => avatarInput.current.focus(), 100)
   }, [isOpen])
 
   return (

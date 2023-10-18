@@ -62,7 +62,10 @@ function App() {
     confirmAction.current = () => {
       setIsLoading(true)
       api.deleteCard(cardId)
-        .then(() => setCards(cards.filter(card => card.id !== cardId)))
+        .then(() => {
+          setCards(cards.filter(card => card.id !== cardId))
+          closeAllPopups()
+        })
         .catch(err => console.log(err))
         .finally(() => setIsLoading(false))
     }
@@ -138,10 +141,7 @@ function App() {
       <ConfirmPopup
         isOpen={isConfirmPopupOpen}
         isLoading={isLoading}
-        onConfirm={() => {
-          confirmAction.current()
-          closeAllPopups()
-        }}
+        onConfirm={() => confirmAction.current()}
         onClose={closeAllPopups}
       />
       <ImagePopup card={selectedCard} onClose={closeAllPopups}/>

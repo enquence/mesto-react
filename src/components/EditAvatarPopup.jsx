@@ -1,23 +1,26 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef} from 'react';
 import PopupWithForm from "./PopupWithForm";
 import useValidateUrl from "../hooks/useValidateUrl";
+import useForm from "../hooks/useForm";
 
 const EditAvatarPopup = ({isOpen, isLoading, onClose, onUpdateAvatar}) => {
 
   const avatarInput = useRef(null)
-  const [link, setLink] = useState('')
-  const [isLinkValid, linkErrorMessage] = useValidateUrl(link)
+  const {values, setValues, modifiedFlags, resetFlags, handleChange} = useForm({avatar: ''})
+  const [isLinkValid, linkErrorMessage] = useValidateUrl(values.avatar)
 
   const handleSubmit = (evt) => {
     evt.preventDefault()
-    onUpdateAvatar({avatar: avatarInput.current.value})
+    onUpdateAvatar(values)
   }
 
   useEffect(() => {
-    avatarInput.current.value = ''
-    setLink('')
-    if (isOpen) setTimeout( () => avatarInput.current.focus(), 100)
-  }, [isOpen])
+    if (isOpen) {
+      setTimeout( () => avatarInput.current.focus(), 100)
+      setValues({avatar: ''})
+      resetFlags()
+    }
+  }, [isOpen, setValues])
 
   return (
     <PopupWithForm
@@ -29,14 +32,16 @@ const EditAvatarPopup = ({isOpen, isLoading, onClose, onUpdateAvatar}) => {
       onSubmit={handleSubmit}
       onClose={onClose}
     >
-      <input className={`form__field${!isLinkValid ? ' form__field_type_error' : ''}`}
+      <input className={`form__field${!isLinkValid && modifiedFlags.avatar ? ' form__field_type_error' : ''}`}
              type="url"
+             name="avatar"
              placeholder="Введите ссылку на картинку"
              autoComplete="off"
              ref={avatarInput}
-             onChange={(evt) => setLink(evt.target.value)}
+             value={values.avatar}
+             onChange={handleChange}
       />
-      <span className={`form__field-error${(!isLinkValid && isOpen) ? ' form__field-error_active' : ''}`}>{linkErrorMessage}</span>
+      <span className={`form__field-error${(!isLinkValid && modifiedFlags.avatar && isOpen) ? ' form__field-error_active' : ''}`}>{linkErrorMessage}</span>
     </PopupWithForm>
   );
 };

@@ -1,30 +1,31 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef} from 'react';
 import PopupWithForm from "./PopupWithForm";
 import {CurrentUserContext} from "../contexts/currentUser";
 import useValidateText from "../hooks/useValidateText";
+import useForm from "../hooks/useForm";
 
 function EditProfilePopup({isOpen, isLoading, onClose, onUpdateUser}) {
 
   const currentUser = useContext(CurrentUserContext)
-  const [name, setName] = useState(currentUser.name)
-  const [about, setAbout] = useState(currentUser.about)
+  const {values, setValues, handleChange} = useForm(currentUser)
 
   const nameInput = useRef()
 
-  const [isNameValid, nameErrorMessage] = useValidateText(name, 2, 40)
-  const [isAboutValid, aboutErrorMessage] = useValidateText(about, 2, 200)
+  const [isNameValid, nameErrorMessage] = useValidateText(values.name, 2, 40)
+  const [isAboutValid, aboutErrorMessage] = useValidateText(values.about, 2, 200)
 
   const isFormValid = isAboutValid && isNameValid
 
   useEffect(() => {
-    setName(currentUser.name)
-    setAbout(currentUser.about)
-    if (isOpen) setTimeout( () => nameInput.current.focus(), 100)
-  }, [currentUser, isOpen])
+    if (isOpen) {
+      setValues(currentUser)
+      setTimeout( () => nameInput.current.focus(), 100)
+    }
+  }, [currentUser, isOpen, setValues])
 
   const handleSubmit = (evt) => {
     evt.preventDefault()
-    onUpdateUser({name, about})
+    onUpdateUser(values)
   }
 
   return (
@@ -39,18 +40,20 @@ function EditProfilePopup({isOpen, isLoading, onClose, onUpdateUser}) {
     >
       <input className={`form__field${!isNameValid ? ' form__field_type_error' : ''}`}
              type="text"
+             name="name"
              ref={nameInput}
              placeholder="Ваше имя"
              autoComplete="off"
-             value={name || ''}
-             onChange={(evt) => setName(evt.target.value)}/>
+             value={values.name || ''}
+             onChange={handleChange}/>
       <span className={`form__field-error${(!isNameValid && isOpen) ? ' form__field-error_active' : ''}`}>{nameErrorMessage}</span>
       <input className={`form__field${!isAboutValid ? ' form__field_type_error' : ''}`}
              type="text"
+             name="about"
              placeholder="Что вас определяет?"
              autoComplete="off"
-             value={about || ''}
-             onChange={(evt) => setAbout(evt.target.value)}/>
+             value={values.about || ''}
+             onChange={handleChange}/>
       <span className={`form__field-error${(!isAboutValid && isOpen) ? ' form__field-error_active' : ''}`}>{aboutErrorMessage}</span>
     </PopupWithForm>
   );

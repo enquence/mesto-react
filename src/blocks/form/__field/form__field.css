@@ -1,5 +1,6 @@
 .form__field {
   width: 100%;
+  background-color: rgba(0,0,0,0);
   border: none;
   border-bottom: rgba(0, 0, 0, 0.2) 1px solid;
   outline: none;

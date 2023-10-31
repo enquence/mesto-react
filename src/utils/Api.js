@@ -1,5 +1,5 @@
 class Api {
-  constructor({ url, headers}) {
+  constructor({url, headers}) {
     this._url = url
     this._headers = headers
   }
@@ -8,70 +8,79 @@ class Api {
     return fetch(url, options)
       .then((resp) => {
         if (resp.ok) return resp.json()
-        throw new Error(`Ошибка: ${resp.statusText}`)
+        throw new Error(`${resp.status}`)
       })
   }
 
   getAllCards() {
     return this._sendRequest(`${this._url}/cards`, {
-      method: 'GET',
-      headers: this._headers
+      method: 'GET', headers: this._headers
     })
   }
 
-  addCard({ name, link }) {
+  addCard({name, link}) {
     return this._sendRequest(`${this._url}/cards`, {
-      method: 'POST',
-      headers: this._headers,
-      body: JSON.stringify({
-        name: name,
-        link: link
+      method: 'POST', headers: this._headers, body: JSON.stringify({
+        name: name, link: link
       })
     })
   }
 
   likeCard(cardId, isLiked) {
     return this._sendRequest(`${this._url}/cards/${cardId}/likes`, {
-      method: isLiked ? 'DELETE' : 'PUT',
-      headers: this._headers
+      method: isLiked ? 'DELETE' : 'PUT', headers: this._headers
     })
   }
 
   deleteCard(cardId) {
     return this._sendRequest(`${this._url}/cards/${cardId}`, {
-      method: 'DELETE',
-      headers: this._headers
+      method: 'DELETE', headers: this._headers
     })
   }
 
   getUserInfo() {
     return this._sendRequest(`${this._url}/users/me`, {
-      method: 'GET',
-      headers: this._headers
+      method: 'GET', headers: this._headers
     })
   }
 
-  updateUserInfo({ name, about }) {
+  updateUserInfo({name, about}) {
     return this._sendRequest(`${this._url}/users/me`, {
-      method: 'PATCH',
-      headers: this._headers,
-      body: JSON.stringify({
-        name: name,
-        about: about
+      method: 'PATCH', headers: this._headers, body: JSON.stringify({
+        name: name, about: about
       })
     })
   }
 
-  updateAvatar({ avatar }) {
+  updateAvatar({avatar}) {
     return this._sendRequest(`${this._url}/users/me/avatar`, {
-      method: 'PATCH',
-      headers: this._headers,
-      body: JSON.stringify({
+      method: 'PATCH', headers: this._headers, body: JSON.stringify({
         avatar: avatar
       })
     })
   }
 
+}
+
+class AuthApi {
+  constructor({url, headers}) {
+    this._url = url
+    this._headers = headers
+  }
+
+  signUp(data) {
+    return fetch(`${this._url}/signup`, { method: 'POST', headers: this._headers, body: JSON.stringify(data) })
+  }
+
+  signIn(data) {
+    return fetch(`${this._url}/signin`, { method: 'POST', headers: this._headers, body: JSON.stringify(data) })
+  }
+
+  checkToken(token) {
+    return fetch(`${this._url}/users/me`, {
+      method: 'GET', headers: {...this._headers, 'Authorization': `Bearer ${token}`}
+    })
+  }
 }
 
 const optionsApi = {
@@ -81,7 +90,12 @@ const optionsApi = {
     'Content-Type': 'application/json'
   }
 }
+const optionsAuthApi = {
+  url: 'https://auth.nomoreparties.co',
+  headers: {'Content-Type': 'application/json',}
+}
 
+const authApi = new AuthApi(optionsAuthApi)
 const api = new Api(optionsApi)
 
-export default api
+export {api, authApi}
